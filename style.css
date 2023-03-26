@@ -38,6 +38,16 @@ body {
     background-color: rgba(0, 0, 0, 0.156);
 }
 
+.green {
+    background-color: green;
+}
+.yellow {
+    background-color: yellow;
+}
+.black {
+    background-color: rgb(58, 58, 58);
+}
+
 .one {
     border: 5px solid green;
 }

@@ -1,6 +1,7 @@
 let grid = document.getElementById("grid");
 let selected = 0;
 let row = 0;
+let correctWord = "GLASS"; //todo Grab random one
 
 // Create all Squares
 for (let i = 0; i < 5 * 6; i++) {
@@ -124,7 +125,13 @@ function select(self) {
 }
 
 function checkWord(word) {
-    //TODO
+    for (let i = 0; i < 5; i++) {
+        if (word[i] === correctWord[i])
+            getSquare(row * 5 + i).classList.add("green");
+        else if (correctWord.search(word[i]) !== -1)
+            getSquare(row * 5 + i).classList.add("yellow");
+        else getSquare(row * 5 + i).classList.add("black");
+    }
 }
 
 //* Math Helpers
