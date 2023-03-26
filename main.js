@@ -20,9 +20,12 @@ select(squares[0]);
 
 // Remove disabled from row
 function enableRow(row) {
-    for (let i = row * 5; i < row * 5 + 4; i++)
+    select(getSquare(row * 5));
+    for (let i = row * 5; i <= row * 5 + 4; i++)
         getSquare(i).classList.remove("disabled");
 }
+
+enableRow(row);
 
 // Allow to select with the mouse
 squares.forEach((element) => {
@@ -84,14 +87,14 @@ document.addEventListener("keyup", (e) => {
                 break;
             case "Enter":
                 let word = "";
-                let complete = true;
+                let completed = true;
 
-                for (let i = 0; i < 4; i++) {
-                    if (getSquare(i).innerHTML === "") complete = false;
+                for (let i = row * 5; i <= row * 5 + 4; i++) {
+                    if (getSquare(i).innerHTML === "") completed = false;
                     word += getSquare(i).innerHTML;
                 }
 
-                if (complete) {
+                if (completed) {
                     checkWord(word);
 
                     //todo Check for game over
@@ -118,6 +121,10 @@ function select(self) {
 
         // console.warn(self.id, selected); //! Debug Warn
     }
+}
+
+function checkWord(word) {
+    //TODO
 }
 
 //* Math Helpers
