@@ -1,7 +1,8 @@
+import { correctWord, isWordValid } from "./words.js";
+
 let grid = document.getElementById("grid");
 let selected = 0;
 let row = 0;
-let correctWord = "GLASS"; //todo Grab random one
 
 // Create all Squares
 for (let i = 0; i < 5 * 6; i++) {
@@ -33,6 +34,7 @@ squares.forEach((element) => {
     element.addEventListener("click", () => select(element));
 });
 
+// Keyboard events
 document.addEventListener("keyup", (e) => {
     let key = e.key;
 
@@ -96,10 +98,9 @@ document.addEventListener("keyup", (e) => {
                 }
 
                 if (completed) {
-                    checkWord(word);
-
-                    //todo Check for game over
-                    enableRow(++row);
+                    if (checkWord(word))
+                        //todo Check for game over
+                        enableRow(++row);
                 }
                 break;
         }
@@ -125,6 +126,12 @@ function select(self) {
 }
 
 function checkWord(word) {
+    if (!isWordValid(word)) {
+        window.alert("Word not on list"); //! Debugging
+        console.warn("Correct Word: ", correctWord); //! Debugging
+        return false;
+    }
+
     for (let i = 0; i < 5; i++) {
         if (word[i] === correctWord[i])
             getSquare(row * 5 + i).classList.add("green");
@@ -132,6 +139,7 @@ function checkWord(word) {
             getSquare(row * 5 + i).classList.add("yellow");
         else getSquare(row * 5 + i).classList.add("black");
     }
+    return true;
 }
 
 //* Math Helpers
