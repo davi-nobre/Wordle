@@ -8,7 +8,7 @@ for (let i = 0; i < 5 * 6; i++) {
         Math.floor(i / 5)
     ];
     let square = document.createElement("div");
-    square.className = `square ${order}`;
+    square.className = `square ${order} disabled`;
     square.id = `l${i}`;
 
     grid.append(square);
@@ -17,6 +17,12 @@ for (let i = 0; i < 5 * 6; i++) {
 // Select first square
 let squares = document.querySelectorAll(".square");
 select(squares[0]);
+
+// Remove disabled from row
+function enableRow(row) {
+    for (let i = row * 5; i < row * 5 + 4; i++)
+        getSquare(i).classList.remove("disabled");
+}
 
 // Allow to select with the mouse
 squares.forEach((element) => {
@@ -47,26 +53,52 @@ document.addEventListener("keyup", (e) => {
             //todo - (Left Key goes to Last Letter)
             //? (selected = 6)
         }
-    } else if (key === "ArrowRight" || key === " ") {
-        // Move right
-        let newSel = clamp(selected + 1, row * 5, row * 5 + 4);
-        select(getSquare(newSel));
-    } else if (key === "ArrowLeft") {
-        // Move left
-        let newSel = clamp(selected - 1, row * 5, row * 5 + 4);
-        select(getSquare(newSel));
-    } else if (key === "Backspace") {
-        // Erase
-        if (getSquare(selected).innerHTML !== "")
-            getSquare(selected).innerHTML = "";
-        // Don't erase if there is nothing left
-        else if (selected > row * 5) {
-            let sqr = getSquare(selected - 1);
+    } else
+        switch (key) {
+            case "ArrowRight":
+            case " ":
+                // Move right
+                {
+                    let newSel = clamp(selected + 1, row * 5, row * 5 + 4);
+                    select(getSquare(newSel));
+                }
+                break;
+            case "ArrowLeft":
+                // Move left
+                {
+                    let newSel = clamp(selected - 1, row * 5, row * 5 + 4);
+                    select(getSquare(newSel));
+                }
+                break;
+            case "Backspace":
+                // Erase
+                if (getSquare(selected).innerHTML !== "")
+                    getSquare(selected).innerHTML = "";
+                // Don't erase if it is in the left edge
+                else if (selected > row * 5) {
+                    let sqr = getSquare(selected - 1);
 
-            sqr.innerHTML = "";
-            select(sqr);
+                    sqr.innerHTML = "";
+                    select(sqr);
+                }
+                break;
+            case "Enter":
+                let word = "";
+                let complete = true;
+
+                for (let i = 0; i < 4; i++) {
+                    if (getSquare(i).innerHTML === "") complete = false;
+                    word += getSquare(i).innerHTML;
+                }
+
+                if (complete) {
+                    checkWord(word);
+
+                    //todo Check for game over
+                    enableRow(++row);
+                }
+                break;
         }
-    }
 
     // console.log(key); //! Debug log
 });

@@ -34,6 +34,10 @@ body {
     background-color: rgba(127, 255, 212, 0.339);
 }
 
+.disabled {
+    background-color: rgba(0, 0, 0, 0.156);
+}
+
 .one {
     border: 5px solid green;
 }
