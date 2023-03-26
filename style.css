@@ -1,0 +1,54 @@
+body {
+    user-select: none;
+}
+
+#wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#grid {
+    width: fit-content;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+}
+
+.square {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100px;
+    height: 100px;
+
+    border: 5px solid green;
+    border-radius: 10px;
+
+    margin: 5px 5px;
+    font: bolder 100px Arial;
+}
+
+.selected {
+    background-color: rgba(127, 255, 212, 0.339);
+}
+
+.one {
+    border: 5px solid green;
+}
+.two {
+    border: 5px solid pink;
+}
+.three {
+    border: 5px solid purple;
+}
+.four {
+    border: 5px solid red;
+}
+.five {
+    border: 5px solid blue;
+}
+.six {
+    border: 5px solid aqua;
+}
