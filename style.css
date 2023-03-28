@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap');
+
 body {
     user-select: none;
+    margin: 100px 0 0 0;
+
+    background-color: #344046;
+    width: 100vw;
+    height: calc(100vh - 100px);
 }
 
 #wrapper {
@@ -20,49 +27,37 @@ body {
     justify-content: center;
     align-items: center;
 
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
 
-    border: 5px solid green;
+    box-sizing: border-box;
+    border: 5px solid #222628;
     border-radius: 10px;
 
+    color: whitesmoke;
+
     margin: 5px 5px;
-    font: bolder 100px Arial;
+    font: bold 350% "Rubik";
 }
 
 .selected {
-    background-color: rgba(127, 255, 212, 0.339);
+    border-bottom-width: 12px;
 }
 
 .disabled {
-    background-color: rgba(0, 0, 0, 0.156);
+    background-color: #2d3133;
+    border-color: #2d3133;
 }
 
 .green {
-    background-color: green;
+    background-color: #43A047;
+    border-color: #43A047;
 }
 .yellow {
-    background-color: yellow;
+    background-color: #e5c94e;
+    border-color: #e5c94e;
 }
 .black {
-    background-color: rgb(58, 58, 58);
-}
-
-.one {
-    border: 5px solid green;
-}
-.two {
-    border: 5px solid pink;
-}
-.three {
-    border: 5px solid purple;
-}
-.four {
-    border: 5px solid red;
-}
-.five {
-    border: 5px solid blue;
-}
-.six {
-    border: 5px solid aqua;
+    background-color: rgb(39, 39, 39);
+    border-color: rgb(39, 39, 39);
 }
