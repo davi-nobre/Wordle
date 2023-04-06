@@ -1,6 +1,7 @@
 import { correctWord, isWordValid } from "./words.js";
 
-console.warn(isWordValid(correctWord)); //! DEBUG
+let accentWord = isWordValid(correctWord);
+// console.log(accentWord); //! DEBUG
 
 let grid = document.getElementById("grid");
 let keyboard = document.getElementById("keyboard");
@@ -24,9 +25,21 @@ for (let i = 0; i < 5 * 6; i++) {
     sqr2.style.left = square.getBoundingClientRect().left + "px";
     sqr2.style.top = square.getBoundingClientRect().top + "px";
 
-    console.log(square.getBoundingClientRect());
-
     grid.append(sqr2);
+}
+
+window.addEventListener("resize", () => {
+    adjustSquares();
+});
+
+function adjustSquares() {
+    for (let i = 0; i <= row * 5 + 4; i++) {
+        let square = document.querySelectorAll(".square")[i];
+        let sqr2 = document.querySelectorAll(".sqr2")[i];
+
+        sqr2.style.left = square.getBoundingClientRect().left - 40 + "px";
+        sqr2.style.top = square.getBoundingClientRect().top + "px";
+    }
 }
 
 // Select first square
@@ -35,12 +48,18 @@ select(squares[0]);
 
 // Remove disabled from row
 function enableRow(row) {
-    select(getSquare(row * 5));
-    for (let i = row * 5; i <= row * 5 + 4; i++)
-        getSquare(i).classList.remove("disabled");
+    setTimeout(() => {
+        select(getSquare(row * 5));
+
+        for (let i = row * 5; i <= row * 5 + 4; i++)
+            getSquare(i).classList.remove("disabled");
+    }, 1750);
 }
 
-enableRow(row);
+// Enables first row without delay
+select(getSquare(row * 5));
+for (let i = row * 5; i <= row * 5 + 4; i++)
+    getSquare(i).classList.remove("disabled");
 
 // Allow to select with the mouse
 squares.forEach((element) => {
@@ -185,12 +204,33 @@ function enter() {
     }
 
     if (completed) {
-        if (checkWord(word))
+        if (checkWord(word)) {
             if (row !== 5) enableRow(++row);
             else {
-                window.alert("Você Perdeu :((\n\n" + isWordValid(correctWord));
-                finish();
+                let pElement = document.querySelector(".popup");
+
+                freeze = true;
+                getSquare(selected).classList.remove("selected");
+
+                // Lose popup
+                setTimeout(() => {
+                    document.querySelector(".wordWrapper").className =
+                        "resWrapper";
+
+                    pElement.classList.add("popbox");
+                    pElement.innerHTML = `<p>Você Perdeu :c</p>
+                    <p>Tente outra vez</p>
+                    <p>Palavra correta: ${accentWord}</p>
+                    <div id="again">Jogar Denovo</div>`;
+
+                    let button = document.getElementById("again");
+
+                    button.addEventListener("click", () => {
+                        window.location.reload(true);
+                    });
+                }, 2500);
             }
+        }
     }
 }
 
@@ -211,9 +251,26 @@ function select(self) {
 }
 
 function checkWord(word) {
-    let accentWord = isWordValid(word);
-    if (accentWord === "") {
-        window.alert("Word not on list"); //! Debugging
+    let accentGuess = isWordValid(word);
+    let pElement = document.querySelector(".popup");
+    pElement.classList.remove("wrongWord");
+
+    if (accentGuess === "") {
+        pElement.classList.add("wrongWord");
+        pElement.innerHTML = "Palavra não Encontrada";
+
+        for (let i = row * 5; i < row * 5 + 5; i++) {
+            let square = document.getElementById(`l${i}`);
+            square.animate(
+                [
+                    { transform: "translateX(0px)" },
+                    { transform: "translateX(-10px)", offset: 0.3 },
+                    { transform: "translateX(10px)" },
+                ],
+                { duration: 150, iterations: 2, direction: "alternate" }
+            );
+        }
+
         return false;
     }
 
@@ -227,8 +284,8 @@ function checkWord(word) {
             let sqr = getSquare(row * 5 + i);
             let sqr2 = document.getElementById(`s${row * 5 + i}`);
 
-            sqr.innerHTML = accentWord[i];
-            sqr2.innerHTML = accentWord[i];
+            sqr.innerHTML = accentGuess[i];
+            sqr2.innerHTML = accentGuess[i];
             sqr2.classList.add("green");
 
             // Keyboard
@@ -250,8 +307,8 @@ function checkWord(word) {
                 if (appeared[word[i]] < letterCount(correctWord, word[i])) {
                     let sqr = getSquare(row * 5 + i);
                     let sqr2 = document.getElementById(`s${row * 5 + i}`);
-                    sqr.innerHTML = accentWord[i];
-                    sqr2.innerHTML = accentWord[i];
+                    sqr.innerHTML = accentGuess[i];
+                    sqr2.innerHTML = accentGuess[i];
                     sqr2.classList.add("yellow");
 
                     // Keyboard
@@ -272,8 +329,8 @@ function checkWord(word) {
     function addBlack(i) {
         let sqr = getSquare(row * 5 + i);
         let sqr2 = document.getElementById(`s${row * 5 + i}`);
-        sqr.innerHTML = accentWord[i];
-        sqr2.innerHTML = accentWord[i];
+        sqr.innerHTML = accentGuess[i];
+        sqr2.innerHTML = accentGuess[i];
         sqr2.classList.add("black");
 
         // Keyboard
@@ -288,8 +345,23 @@ function checkWord(word) {
     }
 
     if (word === correctWord) {
-        window.alert("Você acertou\n\n" + isWordValid(correctWord));
-        finish();
+        freeze = true;
+        getSquare(selected).classList.remove("selected");
+
+        // Win popup
+        setTimeout(() => {
+            document.querySelector(".wordWrapper").className = "resWrapper";
+            pElement.classList.add("popbox");
+            pElement.innerHTML = `<p>Parabéns você ganhou !</p>
+            <p>Palavra correta: ${accentWord}</p>
+            <div id="again">Jogar Denovo</div>`;
+
+            let button = document.getElementById("again");
+
+            button.addEventListener("click", () => {
+                window.location.reload(true);
+            });
+        }, 2500);
 
         return false;
     }
@@ -306,13 +378,24 @@ function letterCount(word, letter) {
 }
 
 function animateSqr(sqr, sqr2) {
+    {
+        for (let i = row * 5; i <= row * 5 + 4; i++) {
+            let square = document.querySelectorAll(".square")[i];
+            let sqr2 = document.querySelectorAll(".sqr2")[i];
+
+            sqr2.style.left = square.getBoundingClientRect().left + "px";
+            sqr2.style.top = square.getBoundingClientRect().top + "px";
+        }
+    }
+
+    let i = +sqr.id.match(/\d+/)[0] % 5;
     sqr.animate(
         [
             { transform: "rotateY(0deg)" },
             { transform: "rotateY(-90deg)", offset: 0.3 },
             { transform: "rotateY(-90deg)" },
         ],
-        { duration: 1000, iterations: 1, fill: "forwards" }
+        { duration: 500, delay: 350 * i, iterations: 1, fill: "forwards" }
     );
 
     sqr2.animate(
@@ -321,15 +404,8 @@ function animateSqr(sqr, sqr2) {
             { transform: "rotateY(-90deg)", offset: 0.3 },
             { transform: "rotateY(0deg)" },
         ],
-        { duration: 1000, iterations: 1, fill: "forwards" }
+        { duration: 500, delay: 350 * i, iterations: 1, fill: "forwards" }
     );
-}
-
-function finish() {
-    freeze = true;
-    getSquare(selected).classList.remove("selected");
-
-    const timeout = setTimeout(() => window.location.reload(true), 2000);
 }
 
 function clickedLetter(letter) {
